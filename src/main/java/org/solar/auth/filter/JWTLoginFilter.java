@@ -7,6 +7,8 @@ import org.jose4j.jwt.MalformedClaimException;
 import org.solar.auth.controller.dto.LoginStatus;
 import org.solar.auth.entity.IUser;
 import org.solar.auth.entity.repo.IUserRepo;
+import org.solar.auth.exception.ErrorCode;
+import org.solar.auth.exception.GenericException;
 import org.solar.auth.service.JoseForJ;
 import org.solar.auth.service.LoginStatusService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -59,11 +61,8 @@ public class JWTLoginFilter extends OncePerRequestFilter {
                 context.setAuthentication(usernamePasswordAuthenticationToken);
 
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new GenericException(e.getMessage(), e, ErrorCode.JWTCONSUMER);
             }
-
-        }else{
-            log.info("no token");
 
         }
 
