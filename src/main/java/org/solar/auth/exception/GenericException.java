@@ -9,21 +9,20 @@ public class GenericException extends RuntimeException{
 
     ErrorCode errorCode;
 
-    public GenericException(ErrorCode errorCode) {
-        super(errorCode.message);
+    public GenericException(ErrorCode errorCode, String ...param) {
+        super(errorCode.getMsg(param));
         this.errorCode = errorCode;
     }
 
-    public GenericException(String message, ErrorCode errorCode) {
-        super(Optional.ofNullable(message).orElse(errorCode.message));
+    public GenericException(String message, ErrorCode errorCode, String ...param) {
+        super(Optional.ofNullable(message).orElse(errorCode.getMsg(param)));
         this.errorCode = errorCode;
     }
 
-    public GenericException(String message, Throwable cause, ErrorCode errorCode) {
-        super(Optional.ofNullable(message).orElse(errorCode.message), cause);
+    public GenericException(String message, Throwable cause, ErrorCode errorCode, String ...param) {
+        super(Optional.ofNullable(message).orElse(errorCode.getMsg(param)), cause);
         this.errorCode = errorCode;
     }
-
 
     public ResponseEntity<BaseResponse> buildResponse(){
         //
