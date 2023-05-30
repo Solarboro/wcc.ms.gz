@@ -51,13 +51,13 @@ public class JWTLoginFilter extends OncePerRequestFilter {
             try {
                 //
                 JwtClaims jwtClaims = joseForJ.consume(token);
-                String subject = jwtClaims.getSubject();
+                Object uid = jwtClaims.getClaimValue("uid");
                 List<SimpleGrantedAuthority> simpleGrantedAuthorities = jwtClaims.getStringListClaimValue("g1").stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
 
                 //
                 SecurityContext context = SecurityContextHolder.getContext();
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                        new UsernamePasswordAuthenticationToken(subject, null, simpleGrantedAuthorities);
+                        new UsernamePasswordAuthenticationToken(uid, null, simpleGrantedAuthorities);
                 context.setAuthentication(usernamePasswordAuthenticationToken);
 
             } catch (Exception e) {
