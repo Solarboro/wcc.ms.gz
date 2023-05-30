@@ -26,7 +26,7 @@ public class JoseForJ {
     JwtConsumer jwtConsumer = new JwtConsumerBuilder()
 //                .setRequireExpirationTime() // the JWT must have an expiration time
 //                .setAllowedClockSkewInSeconds(30) // allow some leeway in validating time based claims to account for clock skew
-            .setRequireSubject() // the JWT must have a subject claim
+//            .setRequireSubject() // the JWT must have a subject claim
             .setExpectedIssuer("Issuer") // whom the JWT needs to have been issued by
             .setExpectedAudience("Audience") // to whom the JWT is intended for
             .setVerificationKey(rsaJsonWebKey.getKey()) // verify the signature with the public key
@@ -37,7 +37,7 @@ public class JoseForJ {
     public JoseForJ() throws JoseException {
     }
 
-    public String produce (String subject, List<String> stringListClaimValue){
+    public String produce (Object uid, List<String> stringListClaimValue){
 
         // Create the Claims, which will be the content of the JWT
         JwtClaims claims = new JwtClaims();
@@ -47,8 +47,9 @@ public class JoseForJ {
 //        claims.setGeneratedJwtId(); // a unique identifier for the token
 //        claims.setIssuedAtToNow();  // when the token was issued/created (now)
 //        claims.setNotBeforeMinutesInThePast(2); // time before which the token is not yet valid (2 minutes ago)
-        claims.setSubject(subject); // the subject/principal is whom the token is about
+//        claims.setSubject(subject); // the subject/principal is whom the token is about
 //        claims.setClaim("email","mail@example.com"); // additional claims/attributes about the subject can be added
+        claims.setClaim("uid", uid);
         claims.setStringListClaim("g1", stringListClaimValue); // multi-valued claims work too and will end up as a JSON array
 
         // A JWT is a JWS and/or a JWE with JSON claims as the payload.

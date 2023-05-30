@@ -7,10 +7,13 @@ import lombok.extern.log4j.Log4j2;
 import org.solar.auth.controller.dto.CustomerDTO;
 import org.solar.auth.controller.dto.LoginStatus;
 import org.solar.auth.controller.res.BaseResponse;
+import org.solar.auth.entity.Authorities;
 import org.solar.auth.entity.IUser;
 import org.solar.auth.entity.repo.IUserRepo;
+import org.solar.auth.entity.wcc.Product;
 import org.solar.auth.exception.ErrorCode;
 import org.solar.auth.exception.GenericException;
+import org.solar.auth.service.wcc.impl.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -25,37 +28,35 @@ public class Index {
 
     IUserRepo iUserRepo;
 
+    ProductService productService;
 
-    @PostMapping("upload")
-    public CustomerDTO upload(@RequestBody CustomerDTO iUser) throws JsonProcessingException {
 
-        //
-        if(true)
-            throw new GenericException(ErrorCode.C_00_002);
-        System.out.println(new ObjectMapper().writeValueAsString(iUser));
-        return iUser;
+    @GetMapping("user")
+    public IUser get( Authentication authentication) throws JsonProcessingException {
+
+        return iUserRepo.findById((Long)authentication.getPrincipal()).get();
+    }
+
+    @PostMapping("user")
+    public Product upload(@RequestBody Product iUser, Principal principal) throws JsonProcessingException {
+
+        return productService.newProduct(iUser, principal.getName());
     }
 
     @RequestMapping("index2/{value}")
     public IUser index(@PathVariable String value, Principal principal, Authentication authentication){
 
 
+        System.out.println(principal.getClass().getName());
+        System.out.println(authentication.getClass().getName());
 
-        log.info(principal.getClass().getName());
-        log.info(authentication.getClass().getName());
-        log.info(authentication.getPrincipal().getClass().getName());
-        log.info(authentication.getName());
+        System.out.println(authentication.getPrincipal());
+        System.out.println(authentication.getPrincipal().getClass().getName());
 
-        log.info(principal.getName());
-        IUser principal1 = (IUser) authentication.getPrincipal();
-        log.info(principal1.getUsername());
+        System.out.println(authentication.getCredentials());
+        System.out.println(authentication.getCredentials().getClass().getName());
 
-        Optional<IUser> byId = iUserRepo.findById(2L);
-        byId.get().setPassword(value);
-        IUser iUser = byId.get();
-
-        iUserRepo.flush();
-        return iUser;
+        return null;
     }
 
 

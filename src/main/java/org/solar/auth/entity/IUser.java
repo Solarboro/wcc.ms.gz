@@ -9,22 +9,23 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
 @Entity
-public class IUser extends BEntity{
+public class IUser extends BEntity implements Serializable {
 
     String username;
 
-    @OneToMany
-    @JoinColumn(name = "iuser_id")
-    List<Authorities> authoritiesList = new ArrayList<>();
-
     @JsonIgnore
     String password;
+
+    @OneToMany
+    @JoinColumn(name="uesrid")
+    List<Authorities> authoritiesList = new ArrayList<>();
 
     @JsonIgnore
     public User getUser(){
@@ -35,13 +36,4 @@ public class IUser extends BEntity{
         return user;
     }
 
-    String cust;
-
-    public String getCdef(){
-        return cust;
-    }
-
-    public void setGdef(String value){
-        this.cust = value;
-    }
 }
