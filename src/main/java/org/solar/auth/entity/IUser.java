@@ -5,19 +5,19 @@ import lombok.Data;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Data
 @Entity
 public class IUser extends BEntity implements Serializable {
 
+    String lastname;
+    String firstname;
     String username;
 
     @JsonIgnore
@@ -35,5 +35,10 @@ public class IUser extends BEntity implements Serializable {
 
         return user;
     }
+
+    public String getFullname(){
+        return Optional.of(lastname + ", " + firstname).orElse("未知");
+    }
+
 
 }

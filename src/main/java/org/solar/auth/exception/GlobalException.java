@@ -16,7 +16,8 @@ public class GlobalException {
         //
         log.warn(ex.getMessage(), ex);
         BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setMessage(ex.getMessage());
+        baseResponse.setError(ErrorCode.C_00_001.code);
+        baseResponse.setMessage(ErrorCode.C_00_001.message);
         return ResponseEntity.internalServerError().body(baseResponse);
     }
 

@@ -9,9 +9,11 @@ public enum ErrorCode {
     JWTCONSUMER(200, "JWT parse fail", HttpStatus.BAD_REQUEST),
     JWTPRODUCE(201, "JWT create fail", HttpStatus.BAD_REQUEST),
 
+    PRODUCT_MISMATCH(6,"订单 所有者不匹配", HttpStatus.BAD_REQUEST),
+    PRODUCT_NOTFOUND(3,"有效订单不存在 操作不允许", HttpStatus.BAD_REQUEST),
     USERNOTFOUND(5,"User '%s' Not Found", HttpStatus.BAD_REQUEST),
-    C_00_001(1,"COMMON Error 1", HttpStatus.BAD_REQUEST),
-    C_00_002(2,"COMMON Error 2", HttpStatus.INTERNAL_SERVER_ERROR);
+    C_00_001(1,"发生错误, 请联系管理员", HttpStatus.BAD_REQUEST),
+    C_00_002(2,"当前状态 不允许修改", HttpStatus.INTERNAL_SERVER_ERROR);
 
 
 
