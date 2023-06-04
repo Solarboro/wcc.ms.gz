@@ -9,6 +9,7 @@ public enum ErrorCode {
     JWTCONSUMER(200, "JWT parse fail", HttpStatus.BAD_REQUEST),
     JWTPRODUCE(201, "JWT create fail", HttpStatus.BAD_REQUEST),
 
+    PRODUCT_DELFAIL(7,"非新建订单 不允许删除", HttpStatus.BAD_REQUEST),
     PRODUCT_MISMATCH(6,"订单 所有者不匹配", HttpStatus.BAD_REQUEST),
     PRODUCT_NOTFOUND(3,"有效订单不存在 操作不允许", HttpStatus.BAD_REQUEST),
     USERNOTFOUND(5,"User '%s' Not Found", HttpStatus.BAD_REQUEST),

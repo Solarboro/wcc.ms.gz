@@ -5,6 +5,7 @@ import org.solar.auth.entity.wcc.*;
 public interface ProductService {
 
     Product newProduct(Product product, Long uid);
+    void delProduct(Long productId, Long uid);
 
     // retrieve
 

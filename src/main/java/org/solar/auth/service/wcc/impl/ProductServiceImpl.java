@@ -38,6 +38,18 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    public void delProduct(Long productId, Long uid) {
+        //
+        Product product = productOwnerValidate(productId, uid);
+
+        if (!product.getProductStatus().equals(Product.ProductStatus.pending))
+            throw new GenericException(ErrorCode.PRODUCT_DELFAIL);
+
+        productRepo.delete(product);
+
+    }
+
+    @Override
     public Product updateBasic(Product product, Long uid) {
         return null;
     }

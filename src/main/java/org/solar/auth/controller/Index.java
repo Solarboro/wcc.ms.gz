@@ -44,6 +44,11 @@ public class Index {
         return productService.newProduct(product, (Long) authentication.getPrincipal());
     }
 
+    @DeleteMapping("product/{productId}")
+    public void delProducts(@PathVariable Long productId, Authentication authentication){
+        productService.delProduct(productId, (Long) authentication.getPrincipal());
+    }
+
     @PutMapping("product/{productId}/studio")
     public SampleOrder updateProductStudio(@PathVariable Long productId, @RequestBody SampleStudios sampleStudios, Authentication authentication){
         return productService.updateStudio(productId, (Long) authentication.getPrincipal(), sampleStudios.getId());

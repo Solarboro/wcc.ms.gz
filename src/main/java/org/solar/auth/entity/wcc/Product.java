@@ -52,7 +52,6 @@ public class Product extends BEntity {
     @JoinColumn(name = "product_id")
     List<CustOrder> custOrders = new ArrayList<>();
 
-
     // ==== product materials
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
