@@ -9,8 +9,11 @@ import javax.persistence.Entity;
 @Entity
 public class Payment extends BEntity {
 
+
     Float amount;
     Long date;
+    String title;
     String comment;
+    Boolean isPaid;
 
 }
