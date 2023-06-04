@@ -1,7 +1,6 @@
 package org.solar.auth.service.wcc.impl;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.solar.auth.entity.IUser;
 import org.solar.auth.entity.wcc.*;
 import org.solar.auth.entity.wcc.repo.ProductRepo;
@@ -11,7 +10,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.OptionalLong;
 
 @Service
 @AllArgsConstructor
@@ -68,8 +66,7 @@ public class ProductServiceImpl implements ProductService{
         SampleStudios sampleStudios = new SampleStudios();
         sampleStudios.setId(studioId);
         sampleOrder.setSampleStudios(sampleStudios);
-
-
+        sampleOrder.setManufactureDates(System.currentTimeMillis());
 
         productRepo.flush();
         return sampleOrder;
@@ -194,9 +191,11 @@ public class ProductServiceImpl implements ProductService{
         Material raw = new Material();
         BeanUtils.copyProperties(material, raw);
         raw.setId(null);
-        product.getMaterials().add(raw);
-        //
+        if(product.getProductStatus() == Product.ProductStatus.studio && raw.isFactory())
+            product.setProductStatus(Product.ProductStatus.factory);
 
+        //
+        product.getMaterials().add(raw);
         productRepo.flush();
         return raw;
     }

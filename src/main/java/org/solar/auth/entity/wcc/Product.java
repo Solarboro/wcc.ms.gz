@@ -10,6 +10,8 @@ import org.solar.auth.entity.IUser;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Data
@@ -50,7 +52,7 @@ public class Product extends BEntity {
     // ==== customer Order
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
-    List<CustOrder> custOrders = new ArrayList<>();
+    List<CustOrder> custOrders = Stream.of("xs", "s", "m", "l", "xl", "xxl").map(CustOrder::new).collect(Collectors.toList());
 
     // ==== product materials
     @OneToMany(cascade = CascadeType.ALL)

@@ -1,15 +1,16 @@
 package org.solar.auth.entity.wcc;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.solar.auth.entity.BEntity;
 
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 
 @Data
 @Entity
+@NoArgsConstructor
 public class CustOrder extends BEntity
 {
     String size; // xs s m l xl xxl
@@ -39,5 +40,9 @@ public class CustOrder extends BEntity
 
     public int getAmount() {
         return getActCount() * price ;
+    }
+
+    public CustOrder(String size) {
+        this.size = size;
     }
 }
