@@ -9,6 +9,7 @@ import org.solar.auth.exception.GenericException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,6 +18,16 @@ public class ProductServiceImpl implements ProductService{
 
 
     ProductRepo productRepo;
+
+    @Override
+    public List<Product> myProducts(Long uid) {
+        return productRepo.findMyAll(uid);
+    }
+
+    @Override
+    public List<Product> allProducts() {
+        return productRepo.findAll();
+    }
 
     @Override
     public Product newProduct(Product product, Long uid) {
@@ -49,8 +60,19 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public Product updateBasic(Product product, Long uid) {
-        return null;
+        //
+        Product raw = productOwnerValidate(product.getId(), uid);
+
+        //
+        Optional.ofNullable(product.getStyle()).ifPresent(value -> raw.setStyle(value));
+        Optional.ofNullable(product.getModel()).ifPresent(value -> raw.setModel(value));
+        Optional.ofNullable(product.getImage()).ifPresent(value -> raw.setImage(value));
+        Optional.ofNullable(product.isEnable()).ifPresent(value -> raw.setEnable(value));
+
+        productRepo.flush();
+        return raw;
     }
+
 
     @Override
     public SampleOrder updateStudio(Long productId, Long uid, Long studioId) {

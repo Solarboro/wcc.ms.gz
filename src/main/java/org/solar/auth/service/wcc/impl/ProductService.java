@@ -2,8 +2,14 @@ package org.solar.auth.service.wcc.impl;
 
 import org.solar.auth.entity.wcc.*;
 
+import java.util.List;
+
 public interface ProductService {
 
+    // product
+
+    List<Product> myProducts(Long uid);
+    List<Product> allProducts();
     Product newProduct(Product product, Long uid);
     void delProduct(Long productId, Long uid);
 
@@ -25,8 +31,6 @@ public interface ProductService {
     CustOrder newCustOrder(Long productId, Long uid, CustOrder custOrder);
     CustOrder putCustOrder(Long productId, Long uid, CustOrder custOrder);
     void delCustOrder(Long productId, Long uid, Long custOrderId);
-
-
 
     // Material
     Material newMaterial(Long productId, Long uid, Material material);

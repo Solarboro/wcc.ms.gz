@@ -26,6 +26,10 @@ public class Product extends BEntity {
 
     String image;
 
+    boolean enable = true;
+
+    String comment;
+
     @Enumerated(EnumType.STRING)
     ProductStatus productStatus = ProductStatus.pending;
 

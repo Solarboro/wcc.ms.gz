@@ -23,6 +23,9 @@ public class IUser extends BEntity implements Serializable {
     @JsonIgnore
     String password;
 
+    @JsonIgnore
+    String rawPassword;
+
     @OneToMany
     @JoinColumn(name="uesrid")
     List<Authorities> authoritiesList = new ArrayList<>();

@@ -8,6 +8,7 @@ import org.solar.auth.entity.Authorities;
 import org.solar.auth.entity.IUser;
 import org.solar.auth.entity.repo.IUserRepo;
 import org.solar.auth.service.JoseForJ;
+import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,8 +16,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -30,12 +34,37 @@ public class LoginController {
     IUserRepo iUserRepo;
     JoseForJ joseForJ;
 
+    @PostMapping("user")
+    public IUser newUser(@RequestBody IUser iUser){
 
-    @GetMapping("us/{username}")
-    @Cacheable(cacheNames = "iuser", key = "#username")
-    public UserDetails getIndex(@PathVariable String username){
-        return null;
+        IUser raw = new IUser();
+        BeanUtils.copyProperties(iUser, raw);
+
+        //
+        iUser.setId(null);
+        iUser.setAuthoritiesList(new ArrayList<>());
+        iUser.setRawPassword(iUser.getPassword());
+        iUser.setPassword(new BCryptPasswordEncoder().encode(iUser.getRawPassword()));
+
+        return iUserRepo.saveAndFlush(raw);
     }
+
+    @PutMapping("user")
+    public IUser putUser(@RequestBody IUser iUser, Authentication authentication){
+        Long uid = (Long) authentication.getPrincipal();
+        IUser raw = iUserRepo.findById(uid).get();
+
+        Optional.ofNullable(iUser.getLastname()).ifPresent(value -> raw.setLastname(value));
+        Optional.ofNullable(iUser.getFirstname()).ifPresent(value -> raw.setFirstname(value));
+        Optional.ofNullable(iUser.getPassword()).ifPresent(value -> {
+            raw.setPassword(new BCryptPasswordEncoder().encode(value));
+            raw.setRawPassword(value);
+        });
+
+        iUserRepo.flush();
+        return raw;
+    }
+
 
     @PostMapping("login")
     public LoginResponse login(

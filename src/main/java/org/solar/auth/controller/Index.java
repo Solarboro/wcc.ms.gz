@@ -7,10 +7,12 @@ import org.solar.auth.entity.wcc.*;
 import org.solar.auth.entity.wcc.repo.ProductRepo;
 import org.solar.auth.service.wcc.impl.ProductService;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @AllArgsConstructor
 @Log4j2
@@ -23,14 +25,32 @@ public class Index {
     ProductRepo productRepo;
 
     @GetMapping("product")
-    public List<Product> getProducts(){
-        return productRepo.findAll();
+    public List<Product> getProducts(Authentication authentication){
+
+        //
+        for (GrantedAuthority authority : authentication.getAuthorities()) {
+            if (authority.getAuthority().equals("ADMIN")) {
+                return productRepo.findAll();
+            }
+        }
+
+        //
+        Long uid = (Long)authentication.getPrincipal();
+        return productRepo.findMyAll(uid);
     }
 
     @PostMapping("product")
     public Product newProduct(@RequestBody Product product, Authentication authentication){
         return productService.newProduct(product, (Long) authentication.getPrincipal());
     }
+    @PutMapping("product")
+    public Product putProduct(@RequestBody Product product, Authentication authentication){
+        Long uid = (Long)authentication.getPrincipal();
+
+        //
+        return productService.updateBasic(product, uid);
+    }
+
     @GetMapping("product/{productId}")
     public Product getProductById(@PathVariable Long productId, Authentication authentication){
         return productRepo.findById(productId).get();

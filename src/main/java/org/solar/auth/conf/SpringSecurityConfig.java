@@ -38,7 +38,7 @@ public class SpringSecurityConfig {
         http.csrf().disable().cors().and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .antMatchers("/login","/us/**").anonymous()
+                .antMatchers("/login").anonymous()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(jwtLoginFilter, UsernamePasswordAuthenticationFilter.class);
