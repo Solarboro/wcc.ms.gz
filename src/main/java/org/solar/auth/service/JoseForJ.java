@@ -13,30 +13,79 @@ import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.lang.JoseException;
 import org.solar.auth.exception.ErrorCode;
 import org.solar.auth.exception.GenericException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.security.*;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.List;
 
 
 @Service
 public class JoseForJ {
 
-    RsaJsonWebKey rsaJsonWebKey = RsaJwkGenerator.generateJwk(2048);
+    @Value("${keystore:root.jks}")
+    String keystoreFile;
+//    RsaJsonWebKey rsaJsonWebKey = RsaJwkGenerator.generateJwk(2048);
+    KeyPair keyPair;
+    JwtConsumer jwtConsumer ;
 
-    JwtConsumer jwtConsumer = new JwtConsumerBuilder()
+    PrivateKey privateKey;
+    PublicKey  publicKey;
+
+
+
+    public PublicKey getPublicKey() throws CertificateException, IOException {
+        CertificateFactory certificatefactory = CertificateFactory.getInstance("X.509");
+        ClassPathResource keystore = new ClassPathResource("root.cer");
+
+        X509Certificate x509Certificate = (X509Certificate) certificatefactory.generateCertificate(keystore.getInputStream());
+        return x509Certificate.getPublicKey();
+    }
+
+    public PrivateKey getPrivateKey() throws Exception {
+        //
+        ClassPathResource keystore = new ClassPathResource("root.jks");
+        KeyStore ks = KeyStore.getInstance("JKS");
+        ks.load(keystore.getInputStream(), "agent2023".toCharArray());
+        return  (PrivateKey) ks.getKey("agent", "agent2023".toCharArray());
+    }
+    @PostConstruct
+    public void initKey() throws Exception{
+
+        //
+        ClassPathResource keystore = new ClassPathResource(keystoreFile);
+
+        KeyStore jks = KeyStore.getInstance("JKS");
+        jks.load(keystore.getInputStream(), "agent2023".toCharArray());
+        Key agent = jks.getKey("agent", "agent2023".toCharArray());
+
+        KeyPairGenerator rsa = KeyPairGenerator.getInstance("RSA");
+        rsa.initialize(2048);
+        keyPair = rsa.genKeyPair();
+
+        publicKey = getPublicKey();
+        privateKey = getPrivateKey();
+
+        // verify signature
+        jwtConsumer = new JwtConsumerBuilder()
 //                .setRequireExpirationTime() // the JWT must have an expiration time
 //                .setAllowedClockSkewInSeconds(30) // allow some leeway in validating time based claims to account for clock skew
 //            .setRequireSubject() // the JWT must have a subject claim
-            .setExpectedIssuer("Issuer") // whom the JWT needs to have been issued by
-            .setExpectedAudience("Audience") // to whom the JWT is intended for
-            .setVerificationKey(rsaJsonWebKey.getKey()) // verify the signature with the public key
-            .setJwsAlgorithmConstraints( // only allow the expected signature algorithm(s) in the given context
-                    AlgorithmConstraints.ConstraintType.PERMIT, AlgorithmIdentifiers.RSA_USING_SHA256) // which is only RS256 here
-            .build(); // create the JwtConsumer instance
+                .setExpectedIssuer("Issuer") // whom the JWT needs to have been issued by
+                .setExpectedAudience("Audience") // to whom the JWT is intended for
+//                .setVerificationKey(keyPair.getPublic()) // verify the signature with the public key
+                .setVerificationKey(publicKey) // verify the signature with the public key
+                .setJwsAlgorithmConstraints( // only allow the expected signature algorithm(s) in the given context
+                        AlgorithmConstraints.ConstraintType.PERMIT, AlgorithmIdentifiers.RSA_USING_SHA256) // which is only RS256 here
+                .build(); // create the JwtConsumer instance
 
-    public JoseForJ() throws JoseException {
     }
-
     public String produce (Object uid, List<String> stringListClaimValue){
 
         // Create the Claims, which will be the content of the JWT
@@ -60,7 +109,9 @@ public class JoseForJ {
         jws.setPayload(claims.toJson());
 
         // The JWT is signed using the private key
-        jws.setKey(rsaJsonWebKey.getPrivateKey());
+//        jws.setKey(rsaJsonWebKey.getPrivateKey());
+//        jws.setKey(keyPair.getPrivate());
+        jws.setKey(privateKey);
 
         // Set the Key ID (kid) header because it's just the polite thing to do.
         // We only have one key in this example but a using a Key ID helps
@@ -88,8 +139,6 @@ public class JoseForJ {
 //        System.out.println("JWT: " + jwt);
         return jwt;
     }
-
-
 
     public JwtClaims consume(String jws){
         // Use JwtConsumerBuilder to construct an appropriate JwtConsumer, which will

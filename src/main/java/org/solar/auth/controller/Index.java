@@ -30,14 +30,19 @@ public class Index {
         //
         for (GrantedAuthority authority : authentication.getAuthorities()) {
             if (authority.getAuthority().equals("ADMIN")) {
-                return productRepo.findAll();
+                return productService.allProducts();
             }
         }
-
         //
         Long uid = (Long)authentication.getPrincipal();
-        return productRepo.findMyAll(uid);
+        return productService.myProducts(uid);
     }
+    @GetMapping("product/701")
+    public List<Product> all701Products(Authentication authentication){
+
+        return productService.all701Products();
+    }
+
 
     @PostMapping("product")
     public Product newProduct(@RequestBody Product product, Authentication authentication){
@@ -117,4 +122,13 @@ public class Index {
         productService.delMaterial(productId, (Long) authentication.getPrincipal(), materialId);
     }
 
+    @GetMapping("product/{productId}/fallbackStatus")
+    public Product fallbackProductStatus(@PathVariable Long productId, Authentication authentication){
+        return productService.fallbackProductStatus(productId, (Long) authentication.getPrincipal());
+    }
+
+    @GetMapping("statistic/studio/701")
+    public List<StatisticStudio> getAll(){
+        return productService.getAllStatisticStudio();
+    }
 }

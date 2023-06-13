@@ -14,7 +14,7 @@ import javax.persistence.Transient;
 public class CustOrder extends BEntity
 {
     String size; // xs s m l xl xxl
-
+    int batch;
     int s1;
     int s2;
     int s3;

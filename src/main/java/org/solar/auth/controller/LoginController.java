@@ -9,13 +9,9 @@ import org.solar.auth.entity.IUser;
 import org.solar.auth.entity.repo.IUserRepo;
 import org.solar.auth.service.JoseForJ;
 import org.springframework.beans.BeanUtils;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,6 +56,22 @@ public class LoginController {
             raw.setPassword(new BCryptPasswordEncoder().encode(value));
             raw.setRawPassword(value);
         });
+
+        // QR Code
+        Optional.ofNullable(iUser.getPaymentQR1()).ifPresent(value -> raw.setPaymentQR1(value));
+        Optional.ofNullable(iUser.getPaymentQR2()).ifPresent(value -> raw.setPaymentQR2(value));
+
+
+        //banking
+        Optional.ofNullable(iUser.getBank1()).ifPresent(value -> raw.setBank1(value));
+        Optional.ofNullable(iUser.getBranch1()).ifPresent(value -> raw.setBranch1(value));
+        Optional.ofNullable(iUser.getAccount1()).ifPresent(value -> raw.setAccount1(value));
+        Optional.ofNullable(iUser.getOwner1()).ifPresent(value -> raw.setOwner1(value));
+
+        Optional.ofNullable(iUser.getBank2()).ifPresent(value -> raw.setBank2(value));
+        Optional.ofNullable(iUser.getBranch2()).ifPresent(value -> raw.setBranch2(value));
+        Optional.ofNullable(iUser.getAccount2()).ifPresent(value -> raw.setAccount2(value));
+        Optional.ofNullable(iUser.getOwner2()).ifPresent(value -> raw.setOwner2(value));
 
         iUserRepo.flush();
         return raw;

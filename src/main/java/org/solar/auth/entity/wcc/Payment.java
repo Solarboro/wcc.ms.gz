@@ -11,9 +11,10 @@ public class Payment extends BEntity {
 
 
     Float amount;
-    Long date;
+    Long date = System.currentTimeMillis();
     String title;
     String comment;
-    Boolean isPaid;
+    int batch;
+    boolean isPaid;
 
 }

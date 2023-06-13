@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.solar.auth.entity.IUser;
 import org.solar.auth.entity.wcc.*;
 import org.solar.auth.entity.wcc.repo.ProductRepo;
+import org.solar.auth.entity.wcc.repo.StatisticStudioRepo;
 import org.solar.auth.exception.ErrorCode;
 import org.solar.auth.exception.GenericException;
 import org.springframework.beans.BeanUtils;
@@ -19,14 +20,22 @@ public class ProductServiceImpl implements ProductService{
 
     ProductRepo productRepo;
 
+    StatisticStudioRepo statisticStudioRepo;
+
     @Override
     public List<Product> myProducts(Long uid) {
+        System.out.println(uid);
         return productRepo.findMyAll(uid);
     }
 
     @Override
     public List<Product> allProducts() {
         return productRepo.findAll();
+    }
+
+    @Override
+    public List<Product> all701Products() {
+        return productRepo.find701Products();
     }
 
     @Override
@@ -59,6 +68,30 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    public Product fallbackProductStatus(Long productId, Long uid) {
+        //
+        Product product = productOwnerValidate(productId, uid);
+
+        //
+        switch (product.getProductStatus()) {
+            case pending:
+                break;
+            case studio:
+                SampleOrder sampleOrder = product.getSampleOrder();
+                if(sampleOrder.getCost() > 0)
+                    throw new GenericException(ErrorCode.C_00_003, String.valueOf(sampleOrder.getCost()), sampleOrder.getProducerName());
+                product.setProductStatus(Product.ProductStatus.pending);
+                break;
+            case factory:
+                product.setProductStatus(Product.ProductStatus.studio);
+                break;
+            default:
+        }
+
+        return productRepo.saveAndFlush(product);
+    }
+
+    @Override
     public Product updateBasic(Product product, Long uid) {
         //
         Product raw = productOwnerValidate(product.getId(), uid);
@@ -68,6 +101,8 @@ public class ProductServiceImpl implements ProductService{
         Optional.ofNullable(product.getModel()).ifPresent(value -> raw.setModel(value));
         Optional.ofNullable(product.getImage()).ifPresent(value -> raw.setImage(value));
         Optional.ofNullable(product.isEnable()).ifPresent(value -> raw.setEnable(value));
+        Optional.ofNullable(product.getAmount()).ifPresent(value -> raw.setAmount(value));
+        Optional.ofNullable(product.getCustName()).ifPresent(value -> raw.setCustName(value));
 
         productRepo.flush();
         return raw;
@@ -91,23 +126,28 @@ public class ProductServiceImpl implements ProductService{
         sampleOrder.setManufactureDates(System.currentTimeMillis());
 
         productRepo.flush();
-        return sampleOrder;
+
+        return productRepo.getById(productId).getSampleOrder();
     }
 
     @Override
     public SampleOrder updateDetail(Long productId, Long uid, SampleOrder sampleOrder) {
-        //
-        Product product = productOwnerValidate(productId, uid);
 
-        //
-        if (product.getProductStatus() != Product.ProductStatus.studio)
-            throw new GenericException(ErrorCode.C_00_002);
+        Product product = productRepo.findById(productId).get();
+//
+//        if (product.getProductStatus() == Product.ProductStatus.done)
+//            throw new GenericException(ErrorCode.C_00_002);
+
 
         //
         SampleOrder rawSampleOrder = product.getSampleOrder();
         Optional.ofNullable(sampleOrder.getManufactureDate()).ifPresent(value -> rawSampleOrder.setManufactureDate(value));
         Optional.ofNullable(sampleOrder.getCost()).ifPresent(value -> rawSampleOrder.setCost(value));
         Optional.ofNullable(sampleOrder.getComment()).ifPresent(value -> rawSampleOrder.setComment(value));
+
+        IUser iUser = new IUser();
+        iUser.setId(uid);
+        rawSampleOrder.setIUser(iUser);
 
         productRepo.flush();
         return rawSampleOrder;
@@ -251,6 +291,11 @@ public class ProductServiceImpl implements ProductService{
 
         productRepo.flush();
 
+    }
+
+    @Override
+    public List<StatisticStudio> getAllStatisticStudio() {
+        return statisticStudioRepo.getALl();
     }
 
     Product productOwnerValidate(Long productId, Long uid){

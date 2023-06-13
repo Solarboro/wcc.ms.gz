@@ -20,6 +20,19 @@ public class IUser extends BEntity implements Serializable {
     String firstname;
     String username;
 
+    String paymentQR1;
+    String paymentQR2;
+
+    //
+    String bank1;
+    String branch1;
+    String account1;
+    String owner1;
+    String bank2;
+    String branch2;
+    String account2;
+    String owner2;
+
     @JsonIgnore
     String password;
 

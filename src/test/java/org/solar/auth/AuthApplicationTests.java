@@ -15,6 +15,11 @@ import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -32,7 +37,7 @@ class AuthApplicationTests {
 
 
     @Test
-    void testGenJWT() throws JoseException, MalformedClaimException {
+    void testGenJWT() throws JoseException, MalformedClaimException, NoSuchAlgorithmException {
         //
         // JSON Web Token is a compact URL-safe means of representing claims/attributes to be transferred between two parties.
         // This example demonstrates producing and consuming a signed JWT
@@ -40,6 +45,12 @@ class AuthApplicationTests {
 
         // Generate an RSA key pair, which will be used for signing and verification of the JWT, wrapped in a JWK
         RsaJsonWebKey rsaJsonWebKey = RsaJwkGenerator.generateJwk(2048);
+
+        KeyPairGenerator rsa = KeyPairGenerator.getInstance("RSA");
+        rsa.initialize(2048);
+
+        KeyPair keyPair = rsa.generateKeyPair();
+
 
         // Give the JWK a Key ID (kid), which is just the polite thing to do
         rsaJsonWebKey.setKeyId("k1");
@@ -65,7 +76,8 @@ class AuthApplicationTests {
         jws.setPayload(claims.toJson());
 
         // The JWT is signed using the private key
-        jws.setKey(rsaJsonWebKey.getPrivateKey());
+//        jws.setKey(rsaJsonWebKey.getPrivateKey());
+        jws.setKey(keyPair.getPrivate());
 
         // Set the Key ID (kid) header because it's just the polite thing to do.
         // We only have one key in this example but a using a Key ID helps
@@ -100,7 +112,8 @@ class AuthApplicationTests {
                 .setRequireSubject() // the JWT must have a subject claim
                 .setExpectedIssuer("Issuer") // whom the JWT needs to have been issued by
                 .setExpectedAudience("Audience") // to whom the JWT is intended for
-                .setVerificationKey(rsaJsonWebKey.getKey()) // verify the signature with the public key
+//                .setVerificationKey(rsaJsonWebKey.getKey()) // verify the signature with the public key
+                .setVerificationKey(keyPair.getPublic()) // verify the signature with the public key
                 .setJwsAlgorithmConstraints( // only allow the expected signature algorithm(s) in the given context
                         AlgorithmConstraints.ConstraintType.PERMIT, AlgorithmIdentifiers.RSA_USING_SHA256) // which is only RS256 here
                 .build(); // create the JwtConsumer instance
@@ -138,4 +151,11 @@ class AuthApplicationTests {
         }
     }
 
+
+    @Test
+    void persistenceKEy() throws NoSuchAlgorithmException {
+        KeyPairGenerator rs256 = KeyPairGenerator.getInstance("RSA");
+
+
+    }
 }

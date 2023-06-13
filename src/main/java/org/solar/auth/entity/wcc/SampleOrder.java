@@ -20,15 +20,18 @@ public class SampleOrder extends BEntity {
     @JsonIgnore
     IUser iUser;
 
-    long manufactureDates = 0;
-    long manufactureDate = 0;
+    Long manufactureDates;
+    Long manufactureDate;
 
-    float cost = 0;
+    Float cost;
 
     String comment = "";
 
     public String getStudioName(){
         return sampleStudios == null ? null : sampleStudios.getName();
+    }
+    public Long getStudioId(){
+        return sampleStudios == null ? null : sampleStudios.getId();
     }
     public Long getProducerId(){
         return iUser == null ? null : iUser.getId();

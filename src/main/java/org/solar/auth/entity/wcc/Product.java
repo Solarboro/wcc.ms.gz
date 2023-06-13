@@ -28,7 +28,11 @@ public class Product extends BEntity {
 
     boolean enable = true;
 
+    Float amount;
+
     String comment;
+
+    String custName;
 
     @Enumerated(EnumType.STRING)
     ProductStatus productStatus = ProductStatus.pending;
@@ -37,6 +41,7 @@ public class Product extends BEntity {
     @JsonIgnore
     @JoinColumn(nullable = false)
     IUser agent = new IUser();
+
     public Long getAgentId(){
         return agent.getId();
     }
@@ -45,21 +50,21 @@ public class Product extends BEntity {
     }
 
     // payment
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "product_id")
     List<Payment> payments = new ArrayList<>();
 
     // ==== Sample Studio
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     SampleOrder sampleOrder = new SampleOrder();
 
     // ==== customer Order
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "product_id")
-    List<CustOrder> custOrders = Stream.of("xs", "s", "m", "l", "xl", "xxl").map(CustOrder::new).collect(Collectors.toList());
+    List<CustOrder> custOrders = Stream.of("XS", "S", "M", "L", "XL").map(CustOrder::new).collect(Collectors.toList());
 
     // ==== product materials
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "product_id")
     List<Material> materials = new ArrayList<>();
 
