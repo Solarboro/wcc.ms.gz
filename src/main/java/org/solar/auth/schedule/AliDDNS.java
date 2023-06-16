@@ -6,6 +6,8 @@ import com.aliyuncs.alidns.model.v20150109.DescribeDomainRecordsRequest;
 import com.aliyuncs.alidns.model.v20150109.DescribeDomainRecordsResponse;
 import com.aliyuncs.alidns.model.v20150109.UpdateDomainRecordRequest;
 import com.aliyuncs.profile.DefaultProfile;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -69,8 +71,16 @@ public class AliDDNS {
 
         try {
             acsResponse = client.getAcsResponse(describeDomainRecordsRequest);
+
+            acsResponse.getDomainRecords().stream().forEach(record -> {
+                try {
+                    System.out.println(new ObjectMapper().writeValueAsString(record));
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+            });
             acsResponse.getDomainRecords().stream()
-                    .filter(record -> !record.getValue().equals(v6Public))
+                    .filter(record -> !record.getValue().equals(v6Public) && record.getStatus().equals("ENABLE"))
                     .findFirst().ifPresent(
                     record -> {
                         UpdateDomainRecordRequest updateDomainRecordRequest = new UpdateDomainRecordRequest();
