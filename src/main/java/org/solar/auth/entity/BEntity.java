@@ -24,4 +24,9 @@ public class BEntity {
 
     @CreatedDate
     long cdate;
+
+    //
+    public Long getKey(){
+        return id;
+    }
 }

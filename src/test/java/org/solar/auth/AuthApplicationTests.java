@@ -13,6 +13,7 @@ import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.Test;
+import org.solar.auth.entity.yun.YunProduct;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.crypto.KeyGenerator;
@@ -23,6 +24,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 //@SpringBootTest
 class AuthApplicationTests {
@@ -156,6 +158,9 @@ class AuthApplicationTests {
     void persistenceKEy() throws NoSuchAlgorithmException {
         KeyPairGenerator rs256 = KeyPairGenerator.getInstance("RSA");
 
+        YunProduct yunProduct = new YunProduct();
+        System.out.println(yunProduct.hashCode());
+        System.out.println(UUID.randomUUID().toString());
 
     }
 }
