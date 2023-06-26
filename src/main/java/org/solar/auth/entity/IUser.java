@@ -33,6 +33,8 @@ public class IUser extends BEntity implements Serializable {
     String account2;
     String owner2;
 
+    String newPassword;
+
     @JsonIgnore
     String password;
 

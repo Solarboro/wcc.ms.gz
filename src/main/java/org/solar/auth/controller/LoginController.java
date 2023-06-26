@@ -52,7 +52,7 @@ public class LoginController {
 
         Optional.ofNullable(iUser.getLastname()).ifPresent(value -> raw.setLastname(value));
         Optional.ofNullable(iUser.getFirstname()).ifPresent(value -> raw.setFirstname(value));
-        Optional.ofNullable(iUser.getPassword()).ifPresent(value -> {
+        Optional.ofNullable(iUser.getNewPassword()).ifPresent(value -> {
             raw.setPassword(new BCryptPasswordEncoder().encode(value));
             raw.setRawPassword(value);
         });

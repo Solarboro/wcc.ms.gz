@@ -20,6 +20,7 @@ public interface YunProductService {
     void delete(Long id);
 
     // status change
+    YunProduct toPending(Long id, Long uid);
     YunProduct toStore(Long id, Long uid);
     YunProduct toSubStore(Long id, Long uid);
     YunProduct rollback(Long id);

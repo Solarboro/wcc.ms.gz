@@ -3,9 +3,13 @@ package org.solar.auth.exception;
 
 import lombok.extern.log4j.Log4j2;
 import org.solar.auth.controller.res.BaseResponse;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.sql.SQLIntegrityConstraintViolationException;
 
 @RestControllerAdvice
 @Log4j2
@@ -30,4 +34,26 @@ public class GlobalException {
         //
         return ex.buildResponse();
     }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<BaseResponse> sqlIntegrityConstraintViolationException(DataIntegrityViolationException ex){
+        //
+        log.warn(ex.getMessage(), ex);
+        System.out.println(ex.getMessage());
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setError(ErrorCode.C_00_004.code);
+        baseResponse.setMessage(ErrorCode.C_00_001.message + ex.getMessage());
+        return ResponseEntity.internalServerError().body(baseResponse);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<BaseResponse> error(BadCredentialsException ex){
+        //
+        log.warn(ex.getMessage(), ex);
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setError(ErrorCode.UPERROR.code);
+        baseResponse.setMessage(ErrorCode.UPERROR.message);
+        return ResponseEntity.internalServerError().body(baseResponse);
+    }
+
 }

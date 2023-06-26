@@ -8,6 +8,8 @@ import org.solar.auth.entity.yun.YunProduct;
 import org.solar.auth.entity.yun.repo.YunBOrderRepo;
 import org.solar.auth.entity.yun.repo.YunFOrderRepo;
 import org.solar.auth.entity.yun.repo.YunProductRepo;
+import org.solar.auth.exception.ErrorCode;
+import org.solar.auth.exception.GenericException;
 import org.solar.auth.service.yun.YunProductService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -74,7 +76,22 @@ public class YunProductServiceImpl implements YunProductService {
 
     @Override
     public void delete(Long id) {
+        YunProduct yunProduct = yunProductRepo.findById(id).get();
+        if(yunProduct.getStatus() != YunProduct.Status.pending)
+            throw new GenericException(ErrorCode.PRODUCT_STATUS_INVALID);
+
         yunProductRepo.deleteById(id);
+    }
+
+    @Override
+    public YunProduct toPending(Long id, Long uid) {
+        YunProduct yunProduct = yunProductRepo.findById(id).get();
+
+        if(yunProduct.getStatus() != YunProduct.Status.subStore)
+            throw new GenericException(ErrorCode.PRODUCT_STATUS_INVALID);
+
+        yunProduct.setStatus(YunProduct.Status.pending);
+        return yunProductRepo.saveAndFlush(yunProduct);
     }
 
     @Override
@@ -96,7 +113,7 @@ public class YunProductServiceImpl implements YunProductService {
         yunProduct.setLastStatus(yunProduct.getStatus());
         yunProduct.setStatus(YunProduct.Status.subStore);
         yunProduct.setToSubStoreDate(System.currentTimeMillis());
-        yunProduct.setToSubStoreUser(userRepo.findById(id).get());
+        yunProduct.setToSubStoreUser(userRepo.findById(uid).get());
         return yunProductRepo.saveAndFlush(yunProduct);
     }
 

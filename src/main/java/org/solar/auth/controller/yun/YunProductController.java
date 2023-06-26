@@ -49,6 +49,12 @@ public class YunProductController {
         yunProductService.delete(id);
     }
 
+    @GetMapping("yun/product/{id}/toPending")
+    public YunProduct toPending(@PathVariable Long id, Authentication authentication) {
+        return yunProductService.toPending(id, (Long) authentication.getPrincipal());
+    }
+
+
     @GetMapping("yun/product/{id}/toStore")
     public YunProduct toStore(@PathVariable Long id, Authentication authentication) {
         return yunProductService.toStore(id, (Long) authentication.getPrincipal());
@@ -59,7 +65,7 @@ public class YunProductController {
         return yunProductService.toSubStore(id, (Long) authentication.getPrincipal());
     }
 
-    @GetMapping("yun/product/{id}/toFactory")
+    @PostMapping("yun/product/{id}/toFactory")
     public YunFOrder toFactory(@RequestBody List<Long> ids, Authentication authentication) {
         return yunProductService.toFactory(ids, (Long) authentication.getPrincipal());
     }

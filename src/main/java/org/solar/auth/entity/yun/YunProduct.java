@@ -24,7 +24,7 @@ public class YunProduct extends BEntity {
 
     String comment;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     YunBOrder yunBOrder;
     @Column(name = "yun_f_order_id")
     Long yunFOderId;
@@ -48,7 +48,7 @@ public class YunProduct extends BEntity {
     IUser toStoreOprtUser;
 
     Long toStoreDate;
-    String getToStoreOprt(){
+    public String getToStoreOprt(){
         return toStoreOprtUser == null ? "" : toStoreOprtUser.getFullname();
     }
 
@@ -57,7 +57,7 @@ public class YunProduct extends BEntity {
     IUser toSubStoreUser;
     String toSubStoreArea;
     Long toSubStoreDate;
-    String getToSubStoreOprt(){
+    public String getToSubStoreOprt(){
         return toSubStoreUser == null ? "" : toSubStoreUser.getFullname();
     }
 
@@ -65,7 +65,7 @@ public class YunProduct extends BEntity {
     @JsonIgnore
     IUser toFactoryUser;
     Long toFactoryDate;
-    String getToFactoryOprt(){
+    public String getToFactoryOprt(){
         return toFactoryUser == null ? "" : toFactoryUser.getFullname();
     }
 }
