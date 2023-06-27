@@ -28,6 +28,7 @@ public interface YunProductService {
 
     List<YunFOrder> retrieveAllFOrder();
     YunFOrder toFactory(List<Long> id, Long uid);
+    YunFOrder updateFOrder(YunFOrder yunFOrder, Long uid);
     List<YunProduct> rollbackFromFactory(Long factoryId);
 
 }

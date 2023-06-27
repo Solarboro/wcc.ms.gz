@@ -98,7 +98,6 @@ public class YunProductServiceImpl implements YunProductService {
     public YunProduct toStore(Long id, Long uid) {
         YunProduct yunProduct = yunProductRepo.findById(id).get();
 
-        yunProduct.setLastStatus(yunProduct.getStatus());
         yunProduct.setStatus(YunProduct.Status.store);
         yunProduct.setToStoreDate(System.currentTimeMillis());
         yunProduct.setToStoreOprtUser(userRepo.findById(id).get());
@@ -110,7 +109,6 @@ public class YunProductServiceImpl implements YunProductService {
 
         YunProduct yunProduct = yunProductRepo.findById(id).get();
 
-        yunProduct.setLastStatus(yunProduct.getStatus());
         yunProduct.setStatus(YunProduct.Status.subStore);
         yunProduct.setToSubStoreDate(System.currentTimeMillis());
         yunProduct.setToSubStoreUser(userRepo.findById(uid).get());
@@ -120,9 +118,6 @@ public class YunProductServiceImpl implements YunProductService {
     @Override
     public YunProduct rollback(Long id) {
         YunProduct yunProduct = yunProductRepo.findById(id).get();
-
-        yunProduct.setStatus(yunProduct.getLastStatus());
-        yunProduct.setLastStatus(null);
         return yunProductRepo.saveAndFlush(yunProduct);
     }
 
@@ -136,24 +131,46 @@ public class YunProductServiceImpl implements YunProductService {
 
         List<YunProduct> yunProducts = yunProductRepo.findAllById(id);
 
+        long ts = System.currentTimeMillis();
+
         //
         for (YunProduct yunProduct : yunProducts) {
             yunProduct.setStatus(YunProduct.Status.toFactory);
-            yunProduct.setToFactoryDate(System.currentTimeMillis());
+            yunProduct.setToFactoryDate(ts);
             yunProduct.setToFactoryUser(userRepo.findById(uid).get());
         }
 
+        //
         YunFOrder yunFOrder = new YunFOrder();
         yunFOrder.setYunProducts(yunProducts);
-
+        yunFOrder.setToFactoryDate(ts);
+        yunFOrder.setToFactoryUser(userRepo.findById(uid).get());
 
         return yunFOrderRepo.save(yunFOrder);
     }
 
     @Override
+    public YunFOrder updateFOrder(YunFOrder yunFOrder, Long uid) {
+        YunFOrder raw = yunFOrderRepo.findById(yunFOrder.getId()).get();
+
+        // update comment
+        Optional.ofNullable(yunFOrder.getComment()).ifPresent(v -> raw.setComment(v));
+
+        return yunFOrderRepo.saveAndFlush(raw);
+
+    }
+
+    @Override
     public List<YunProduct> rollbackFromFactory(Long factoryId) {
-        Optional<YunFOrder> yunFOrder = yunFOrderRepo.findById(factoryId);
-//        List<YunProduct> yunProducts = yunFOrder.get().getYunProducts();
+        YunFOrder yunFOrder = yunFOrderRepo.findById(factoryId).get();
+        yunFOrder.getYunProducts().forEach(
+                v -> {
+                    v.setStatus(YunProduct.Status.subStore);
+                    v.setToFactoryDate(null);
+                    v.setToFactoryUser(null);
+                }
+        );
+        yunFOrderRepo.save(yunFOrder);
 
         // TODO: 2023/6/19 check the result on direct remove record. how 's value in products
         yunFOrderRepo.deleteById(factoryId);

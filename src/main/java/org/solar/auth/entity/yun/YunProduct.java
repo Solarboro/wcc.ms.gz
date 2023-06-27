@@ -32,8 +32,8 @@ public class YunProduct extends BEntity {
 //    Stage info
     @Enumerated(EnumType.STRING)
     Status status = Status.pending;
-    @Enumerated(EnumType.STRING)
-    Status lastStatus;
+
+    String lastStatus;
 
     @OneToOne
     @JsonIgnore

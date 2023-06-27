@@ -80,6 +80,11 @@ public class YunProductController {
         return yunProductService.rollbackFromFactory(factoryId);
     }
 
+    @PutMapping("yun/factory/{factoryId}")
+    public YunFOrder updateFOrder(@RequestBody YunFOrder yunFOrder,  Authentication authentication){
+        return yunProductService.updateFOrder(yunFOrder, (Long) authentication.getPrincipal());
+    }
+
     @GetMapping("yun/factory")
     public List<YunFOrder> retrieveAllFOrder(){
         return yunProductService.retrieveAllFOrder();
