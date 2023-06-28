@@ -4,6 +4,7 @@ package org.solar.auth.controller.yun;
 import lombok.AllArgsConstructor;
 import org.solar.auth.entity.yun.YunFOrder;
 import org.solar.auth.entity.yun.YunProduct;
+import org.solar.auth.entity.yun.YunSummary;
 import org.solar.auth.service.yun.YunProductService;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -88,6 +89,11 @@ public class YunProductController {
     @GetMapping("yun/factory")
     public List<YunFOrder> retrieveAllFOrder(){
         return yunProductService.retrieveAllFOrder();
+    }
+
+    @GetMapping("yun/summary")
+    public List<YunSummary> getAllYunSummary(){
+        return yunProductService.getAllYunSummary();
     }
 
 }

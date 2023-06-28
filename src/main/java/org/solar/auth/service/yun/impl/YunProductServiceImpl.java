@@ -5,9 +5,11 @@ import org.solar.auth.entity.repo.IUserRepo;
 import org.solar.auth.entity.yun.YunBOrder;
 import org.solar.auth.entity.yun.YunFOrder;
 import org.solar.auth.entity.yun.YunProduct;
+import org.solar.auth.entity.yun.YunSummary;
 import org.solar.auth.entity.yun.repo.YunBOrderRepo;
 import org.solar.auth.entity.yun.repo.YunFOrderRepo;
 import org.solar.auth.entity.yun.repo.YunProductRepo;
+import org.solar.auth.entity.yun.repo.YunSummaryRepo;
 import org.solar.auth.exception.ErrorCode;
 import org.solar.auth.exception.GenericException;
 import org.solar.auth.service.yun.YunProductService;
@@ -30,6 +32,8 @@ public class YunProductServiceImpl implements YunProductService {
     YunFOrderRepo yunFOrderRepo;
 
     IUserRepo userRepo;
+
+    YunSummaryRepo yunSummaryRepo;
 
     @Override
     public YunProduct create(YunProduct yunProduct, Long id) {
@@ -175,5 +179,10 @@ public class YunProductServiceImpl implements YunProductService {
         // TODO: 2023/6/19 check the result on direct remove record. how 's value in products
         yunFOrderRepo.deleteById(factoryId);
         return null;
+    }
+
+    @Override
+    public List<YunSummary> getAllYunSummary() {
+        return yunSummaryRepo.getALl();
     }
 }

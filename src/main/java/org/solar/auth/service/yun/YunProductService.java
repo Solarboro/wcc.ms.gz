@@ -2,6 +2,7 @@ package org.solar.auth.service.yun;
 
 import org.solar.auth.entity.yun.YunFOrder;
 import org.solar.auth.entity.yun.YunProduct;
+import org.solar.auth.entity.yun.YunSummary;
 
 import java.util.List;
 
@@ -30,5 +31,10 @@ public interface YunProductService {
     YunFOrder toFactory(List<Long> id, Long uid);
     YunFOrder updateFOrder(YunFOrder yunFOrder, Long uid);
     List<YunProduct> rollbackFromFactory(Long factoryId);
+
+
+    ///
+
+    List<YunSummary> getAllYunSummary();
 
 }
