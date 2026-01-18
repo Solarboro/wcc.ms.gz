@@ -24,6 +24,6 @@ jobs:
     steps:
       - name: Show Value
         run: |
-          echo "Excel Flag: ${{env.flag}}
+          echo "Excel Flag: ${{env.flag}}"
           
           echo "Branch is: ${{github.event.pull_request.head.ref}}"
