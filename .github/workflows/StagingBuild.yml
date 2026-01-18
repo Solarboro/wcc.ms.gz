@@ -1,0 +1,30 @@
+name:
+
+on:
+  pull_request:
+    branches:
+      - release/uat
+    types:
+      - closed
+  workflow_dispatch:
+    inputs:
+      excelFlag:
+        description: Excel installation
+        default: 'NO'
+        type: choice
+        options: ['YES','NO']
+env:
+  flag: ${{
+    github.event_name == 'workflow_dispatch' && github.event.inputs.excelFlag || 'YES'
+  }}
+jobs:
+  build:
+    if: |
+      github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show Value
+        run: |
+          echo "Excel Flag: ${{env.flag}}
+          
+          echo "Branch is: ${{github.event.pull_request.head.ref}}"
