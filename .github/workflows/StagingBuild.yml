@@ -14,6 +14,8 @@ on:
         default: 'NO'
         type: choice
         options: ['YES','NO']
+permissions: 
+  pull-requests: read
 env:
   flag: ${{    github.event_name == 'workflow_dispatch' && github.event.inputs.excelFlag || 'YES'  }}
   
