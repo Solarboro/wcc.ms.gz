@@ -14,9 +14,8 @@ on:
         type: choice
         options: ['YES','NO']
 env:
-  flag: ${{
-    github.event_name == 'workflow_dispatch' && github.event.inputs.excelFlag || 'YES'
-  }}
+  flag: ${{    github.event_name == 'workflow_dispatch' && github.event.inputs.excelFlag || 'YES'  }}
+  
 jobs:
   build:
     if: |
