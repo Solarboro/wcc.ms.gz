@@ -27,3 +27,8 @@ jobs:
           echo "Excel Flag: ${{env.flag}}"
           
           echo "Branch is: ${{github.event.pull_request.head.ref}}"
+      - name: Excel Flag
+        if: env.flag == 'YES'
+        run: |
+          echo "installing Excel"
+
