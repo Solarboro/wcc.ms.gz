@@ -1,4 +1,5 @@
-name:
+name: Build
+run-name:  "ArtifactID: ${{ github.run_id }} | ${{ github.actor }}"
 
 on:
   pull_request:
@@ -25,5 +26,11 @@ jobs:
       - name: Show Value
         run: |
           echo "Excel Flag: ${{env.flag}}"
-          
-          echo "Branch is: ${{github.event.pull_request.head.ref}}"
+          [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ] && branch="${{github.ref_name}}"
+          [ "${GITHUB_EVENT_NAME}" == "pull_request" ] && branch="${{github.event.pull_request.head.ref}}"
+          echo "Branch is: ${branch#feature/}"
+      - name: Excel Flag
+        if: env.flag == 'YES'
+        run: |
+          echo "installing Excel"
+
