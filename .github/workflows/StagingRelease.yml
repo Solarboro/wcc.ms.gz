@@ -16,62 +16,11 @@ jobs:
       - name: Enable
         run: echo ${{github.run_attempt}}
 
-  Compile_iniline_approve1:
-    runs-on: unbuntu-latest
+  compileProgram:
     environment: Approval1
+    runs-on: ubuntu-latest
     steps:
-      - name: init
+      - name: Enable
         run: echo ${{github.run_attempt}}
-      - name: init
-        run: echo running
-
-  Compile_iniline_approve2:
-    needs: [Compile_iniline_approve1]
-    runs-on: unbuntu-latest
-    environment: Approval1
-    steps:
-      - name: init
-        run: echo ${{github.run_attempt}}
-      - name: init
-        run: echo running
-
-  Compile_iniline_approve3:
-    needs: [Compile_iniline_approve2]
-    runs-on: unbuntu-latest
-    environment: Approval1
-    steps:
-      - name: init
-        run: echo ${{github.run_attempt}}
-      - name: init
-        run: echo running
-
-  Compile_parlla_approve1:
-    runs-on: unbuntu-latest
-    environment: Approval1
-    steps:
-      - name: init
-        run: echo ${{github.run_attempt}}
-      - name: init
-        run: echo running
-
-  Compile_parlla_approve2:
-  
-    runs-on: unbuntu-latest
-    environment: Approval2
-    steps:
-      - name: init
-        run: echo ${{github.run_attempt}}
-      - name: init
-        run: echo running
-
-  Compile_parlla_approve3:
-  
-    runs-on: unbuntu-latest
-    environment: Approval3
-    steps:
-      - name: init
-        run: echo ${{github.run_attempt}}
-      - name: init
-        run: echo running
-
+ 
         
