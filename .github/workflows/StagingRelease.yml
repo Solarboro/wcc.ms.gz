@@ -12,6 +12,9 @@ jobs:
     if:  github.event_name == 'workflow_dispatch' && vars.WFENABLE == 'Y'
     runs-on: ubuntu-latest
     steps:
+      - name: checkout source
+        uses: actions/checkout@v4
+        
       - name: raise pr
         uses: peter-evans/create-pull-request@v5
         with:
