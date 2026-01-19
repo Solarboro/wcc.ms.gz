@@ -9,7 +9,7 @@ permissions: write-all
   
 jobs:
   build:
-    if:  github.event_name == 'workflow_dispatch' && vars.WFENABLE
+    if:  github.event_name == 'workflow_dispatch' && vars.WFENABLE == 'Y'
     runs-on: ubuntu-latest
     steps:
       - name: Enable
