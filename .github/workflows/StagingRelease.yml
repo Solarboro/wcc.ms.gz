@@ -16,17 +16,22 @@ jobs:
         uses: actions/checkout@v4
         
       - name: raise pr
+        id: create-pr
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{secrets.GITHUB_TOKEN}}
           title: this is title
           body: this is body
-          branch: release/uat
+          branch: release/uat1
           base: wcc/dev
           reviewers: Solarboro
         
       - name: Enable
-        run: echo ${{github.run_attempt}}
+        env:
+          PR_NUMBER: ${{steps.create-pr.outputs.pull-request-number}}
+        run: |
+          echo "PR : $PR_NUMBER"
+
   release:
     needs: build
     environment: Approval1
