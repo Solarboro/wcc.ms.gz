@@ -10,17 +10,18 @@ permissions: write-all
 jobs:
   build:
     if:  github.event_name == 'workflow_dispatch' && vars.WFENABLE == 'Y'
+    environment: Approval1
     runs-on: ubuntu-latest
     steps:
       - name: Enable
-        run: echo ${{github.run_attemp}}
+        run: echo ${{github.run_attempt}}
 
   Compile_iniline_approve1:
     runs-on: unbuntu-latest
     environment: Approval1
     steps:
       - name: init
-        run: echo ${{github.run_attemp}}
+        run: echo ${{github.run_attempt}}
       - name: init
         run: echo running
 
@@ -30,7 +31,7 @@ jobs:
     environment: Approval1
     steps:
       - name: init
-        run: echo ${{github.run_attemp}}
+        run: echo ${{github.run_attempt}}
       - name: init
         run: echo running
 
@@ -40,7 +41,7 @@ jobs:
     environment: Approval1
     steps:
       - name: init
-        run: echo ${{github.run_attemp}}
+        run: echo ${{github.run_attempt}}
       - name: init
         run: echo running
 
@@ -49,7 +50,7 @@ jobs:
     environment: Approval1
     steps:
       - name: init
-        run: echo ${{github.run_attemp}}
+        run: echo ${{github.run_attempt}}
       - name: init
         run: echo running
 
@@ -59,7 +60,7 @@ jobs:
     environment: Approval2
     steps:
       - name: init
-        run: echo ${{github.run_attemp}}
+        run: echo ${{github.run_attempt}}
       - name: init
         run: echo running
 
@@ -69,7 +70,7 @@ jobs:
     environment: Approval3
     steps:
       - name: init
-        run: echo ${{github.run_attemp}}
+        run: echo ${{github.run_attempt}}
       - name: init
         run: echo running
 
