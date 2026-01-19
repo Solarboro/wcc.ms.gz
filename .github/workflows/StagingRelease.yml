@@ -15,6 +15,13 @@ jobs:
     steps:
       - name: Enable
         run: echo ${{github.run_attempt}}
+  release:
+    needs: build
+    environment: Approval2
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable
+        run: echo ${{github.run_attempt}}
 
   compileProgram:
     environment: Approval1
