@@ -10,12 +10,19 @@ permissions: write-all
 jobs:
   build:
     if:  github.event_name == 'workflow_dispatch' && vars.WFENABLE == 'Y'
-    environment: Approval1
     runs-on: ubuntu-latest
     steps:
       - name: Enable
         run: echo ${{github.run_attempt}}
   release:
+    needs: build
+    environment: Approval1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable
+        run: echo ${{github.run_attempt}}
+
+  compileProgram:
     needs: build
     environment: Approval2
     runs-on: ubuntu-latest
@@ -23,15 +30,16 @@ jobs:
       - name: Enable
         run: echo ${{github.run_attempt}}
 
-  compileProgram:
-    environment: Approval1
+  updateversion:
+    needs: build
+    environment: Approval3
     runs-on: ubuntu-latest
     steps:
       - name: Enable
         run: echo ${{github.run_attempt}}
 
-  updateversion:
-    environment: Approval2
+  confirmation:
+    needs: [release,compileProgram,updateversion]
     runs-on: ubuntu-latest
     steps:
       - name: Enable
