@@ -29,5 +29,12 @@ jobs:
     steps:
       - name: Enable
         run: echo ${{github.run_attempt}}
+
+  updateversion:
+    environment: Approval2
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable
+        run: echo ${{github.run_attempt}}
  
         
