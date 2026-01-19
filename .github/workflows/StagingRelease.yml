@@ -12,6 +12,16 @@ jobs:
     if:  github.event_name == 'workflow_dispatch' && vars.WFENABLE == 'Y'
     runs-on: ubuntu-latest
     steps:
+      - name: raise pr
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{secrets.GITHUB_TOKEN}}
+          title: this is title
+          body: this is body
+          branch: release/uat
+          base: wcc/dev
+          reviewers: Solarboro
+        
       - name: Enable
         run: echo ${{github.run_attempt}}
   release:
