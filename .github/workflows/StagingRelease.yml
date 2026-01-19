@@ -1,7 +1,7 @@
 name: Release
 run-name:  "ArtifactID: ${{ github.run_id }} | ${{ github.actor }}"
 
-on
+on:
   workflow_dispatch:
   
 permissions: write-all
