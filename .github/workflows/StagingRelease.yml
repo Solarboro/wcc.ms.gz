@@ -55,7 +55,7 @@ jobs:
           echo "PR_NUMBER: $PR_NUMBER"
           #show more fields gh pr view $PR_NUMBER --json state,merged 
           gh pr view $PR_NUMBER --json state --jq '"PR Status: \(.state)"' 
-          [ "$(gh pr view $PR_NUMBER --json state --jq '.state')" = "MERGED"  ] || exit 1
+          [ "$(gh pr view $PR_NUMBER --json state --jq '.state')" = "MERGED"  ] || echo PR not Merged && exit 1
       
   DeployToProdFolder:
     needs: [ CheckPR ]
