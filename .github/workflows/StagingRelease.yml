@@ -28,9 +28,9 @@ jobs:
         run: |
           # Raise PR
           
-          gh pr view 10 --json state --jq 'PR Status: .state' 
+          gh pr view 10 --json state --jq '"PR Status: \(.state)"' 
           echo start
-          gh pr view 10 --json state --jq 'PR Status: .state' | echo
+          gh pr view 10 --json state --jq '"PR Status: \(.state)"'  | echo
 
           [ "$(gh pr view 10 --json state --jq '.state')" = "true"  ] || exist 1  
           
