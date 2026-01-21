@@ -28,9 +28,11 @@ jobs:
         run: |
           # Raise PR
           gh pr view 10 --json state
-          
-          gh pr view 10 --json state --jq '.merged'
 
+          gh pr view 10 --json state --jq '.state'
+
+          gh pr view 10 --json state --jq '.state' | echo
+  
           
           #getPrResponse=$(curl -L -X POST -H "Authorization: Bearer ${{secrets.GITHUB_TOKEN}}" https://api.github.com/repos/Solarboro/wcc.ms.gz/pulls -d "{\"title\":\"feature/$pipeline_label to PORD\",\"body\":\"Please pull these awesome changes in!\",\"head\":\"wcc/dev\",\"base\":\"master\"}")
           #echo "===getPrResponse===: ${getPrResponse}" 
