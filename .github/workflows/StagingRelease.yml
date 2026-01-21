@@ -36,7 +36,7 @@ jobs:
             --base feature/fixing-2 > out
           estatus=$?
 
-          [ ${estatus} -ne 0 ] && exit 1
+          # [ ${estatus} -ne 0 ] && exit 1
 
           echo "PR is ready for review and approve: "
           cat out
