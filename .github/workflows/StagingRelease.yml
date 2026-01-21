@@ -27,7 +27,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Raise PR 
-          gh pr view 12 --json
+          #gh pr view 12
           gh pr view 12 --json state --jq '"PR Status: \(.state)"' 
 
 
