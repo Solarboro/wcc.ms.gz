@@ -11,15 +11,23 @@ jobs:
   DeployToUATFolder:
     runs-on: ubuntu-latest
     steps:
-      - run: echo done
+      - name: Process
+        run: | 
+          echo "current: ${{github.run_attempt}}"
+      
   RaisePR:
-    needs: DeployToProdFolder
+    needs: [ DeployToUATFolder ]
     runs-on: ubuntu-latest
     steps:
-      - run: echo done
+      - name: Process
+        run: | 
+          echo "current: ${{github.run_attempt}}"
+      
   DeployToProdFolder:
-    needs: RaisePR
+    needs: [ RaisePR ]
     runs-on: ubuntu-latest
     steps:
-      - run: echo done
+      - name: Process
+        run: | 
+          echo "current: ${{github.run_attempt}}"
         
