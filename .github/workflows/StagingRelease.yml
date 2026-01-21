@@ -17,6 +17,7 @@ jobs:
       
   RaisePR:
     needs: [ DeployToUATFolder ]
+    environment: Approval1
     runs-on: ubuntu-latest
     outputs:
       PR_NUMBER: ${{ steps.raisePR.outputs.prNumber}}
@@ -41,6 +42,7 @@ jobs:
           echo "prNumber=$(basename "$url")" >> $GITHUB_OUTPUT
           
   CheckPR:
+    environment: Approval1
     needs: [ RaisePR ]
     runs-on: ubuntu-latest
     steps:
