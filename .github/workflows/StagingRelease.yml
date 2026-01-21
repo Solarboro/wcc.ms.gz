@@ -22,6 +22,7 @@ jobs:
       - name: Process
         run: | 
           echo "current: ${{github.run_attempt}}"
+          [ "1" == "${{github.run_attempt}}" ] && exit 1
       
   DeployToProdFolder:
     needs: [ RaisePR ]
