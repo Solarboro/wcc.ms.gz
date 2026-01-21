@@ -18,11 +18,14 @@ jobs:
   RaisePR:
     needs: [ DeployToUATFolder ]
     runs-on: ubuntu-latest
+    outputs:
+      PR_NUMBER: ${{ steps.raisePR.outputs.prNumber}}
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
         
       - name: Raise PR
+        id: raisePR
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -30,21 +33,19 @@ jobs:
           #show more fields gh pr view 12 --json state,merged 
           gh pr view 12 --json state --jq '"PR Status: \(.state)"' 
           [ "$(gh pr view 12 --json state --jq '.state')" = "MERGED"  ] || exit 1  
-          
-          #getPrResponse=$(curl -L -X POST -H "Authorization: Bearer ${{secrets.GITHUB_TOKEN}}" https://api.github.com/repos/Solarboro/wcc.ms.gz/pulls -d "{\"title\":\"feature/$pipeline_label to PORD\",\"body\":\"Please pull these awesome changes in!\",\"head\":\"wcc/dev\",\"base\":\"master\"}")
-          #echo "===getPrResponse===: ${getPrResponse}" 
-          #gh --version
+
           gh pr create \
             --title "This is title" \
             --body "this is body" \
             --head ${{github.ref_name}} \
-            --base feature/fixing-1 > out
+            --base feature/bug-2 > out
           estatus=$?
 
           # [ ${estatus} -ne 0 ] && exit 1
 
           echo "PR is ready for review and approve: "
           cat out
+          echo "prNumber=1" >> $GITHUB_OUTPUT
           
           
   CheckPR:
@@ -53,6 +54,7 @@ jobs:
     steps:
       - name: chk PR
         run: |
+          echo "PR_NUMBER: ${{needs.RaisePR.outputs.PR_NUMBER}}"
         
       
   DeployToProdFolder:
