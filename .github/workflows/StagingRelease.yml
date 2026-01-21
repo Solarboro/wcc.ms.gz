@@ -33,6 +33,7 @@ jobs:
           # Raise PR 
           gh pr create \
             --title "${{github.ref_name}} to PROD" \
+            --body "" \
             --head ${{github.ref_name}} \
             --base feature/bug-2 > url
             
