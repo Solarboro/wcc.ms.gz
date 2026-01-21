@@ -33,7 +33,7 @@ jobs:
             --title "This is title" \
             --body "this is body" \
             --head ${{github.ref_name}} \
-            --base dev > out
+            --base feature/fixing-2 > out
           estatus=$?
 
           [ ${estatus} -ne 0 ] && exit 1
