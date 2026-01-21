@@ -8,59 +8,18 @@ permissions: write-all
 
   
 jobs:
-  build:
-    if:  github.event_name == 'workflow_dispatch' && vars.WFENABLE == 'Y'
+  DeployToUATFolder:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout source
-        uses: actions/checkout@v4
-        
-      - name: raise pr
-        id: create-pr
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{secrets.GITHUB_TOKEN}}
-          title: this is title
-          body: this is body
-          branch: release/uat1
-          base: wcc/dev
-          reviewers: Solarboro
-        
-      - name: Enable
-        env:
-          PR_NUMBER: ${{steps.create-pr.outputs.pull-request-number}}
-        run: |
-          echo "PR : $PR_NUMBER"
-
-  release:
-    needs: build
-    environment: Approval1
+      - run: echo done
+  RaisePR:
+    needs: DeployToProdFolder
     runs-on: ubuntu-latest
     steps:
-      - name: Enable
-        run: echo ${{github.run_attempt}}
-
-  compileProgram:
-    needs: build
-    environment: Approval2
+      - run: echo done
+  DeployToProdFolder:
+    needs: RaisePR
     runs-on: ubuntu-latest
     steps:
-      - name: Enable
-        run: echo ${{github.run_attempt}}
-
-  updateversion:
-    needs: build
-    environment: Approval3
-    runs-on: ubuntu-latest
-    steps:
-      - name: Enable
-        run: echo ${{github.run_attempt}}
-
-  confirmation:
-    needs: [release,compileProgram,updateversion]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Enable
-        run: echo ${{github.run_attempt}}
- 
+      - run: echo done
         
