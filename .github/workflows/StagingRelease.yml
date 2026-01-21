@@ -23,6 +23,7 @@ jobs:
         run: | 
           echo "current: ${{github.run_attempt}}"
           [ "1" = "${{github.run_attempt}}" ] && exit 1
+          exit 0
       
   DeployToProdFolder:
     needs: [ RaisePR ]
