@@ -1,0 +1,38 @@
+name: Build
+run-name:  "ArtifactID: ${{ github.run_id }} | ${{ github.actor }}"
+
+on:
+  pull_request:
+    branches:
+      - release/uat
+    types:
+      - closed
+  workflow_dispatch:
+    inputs:
+      excelFlag:
+        description: Excel installation
+        default: 'NO'
+        type: choice
+        options: ['YES','NO']
+permissions: 
+  pull-requests: read
+env:
+  flag: ${{    github.event_name == 'workflow_dispatch' && github.event.inputs.excelFlag || 'YES'  }}
+  
+jobs:
+  build:
+    if: |
+      github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show Value
+        run: |
+          echo "Excel Flag: ${{env.flag}}"
+          [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ] && branch="${{github.ref_name}}"
+          [ "${GITHUB_EVENT_NAME}" == "pull_request" ] && branch="${{github.event.pull_request.head.ref}}"
+          echo "Branch is: ${branch#feature/}"
+      - name: Excel Flag
+        if: env.flag == 'YES'
+        run: |
+          echo "installing Excel"
+

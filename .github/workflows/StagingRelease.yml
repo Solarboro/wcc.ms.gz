@@ -1,0 +1,69 @@
+name: Release
+run-name:  "ArtifactID: ${{ github.run_id }} | ${{ github.actor }}"
+
+on:
+  workflow_dispatch:
+  
+permissions: write-all
+
+  
+jobs:
+  DeployToUATFolder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Process
+        run: | 
+          echo "current: ${{github.run_attempt}}"
+      
+  RaisePR:
+    needs: [ DeployToUATFolder ]
+    environment: Approval1
+    runs-on: ubuntu-latest
+    outputs:
+      PR_NUMBER: ${{ steps.raisePR.outputs.prNumber}}
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+        
+      - name: Raise PR
+        id: raisePR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Raise PR 
+          gh pr create \
+            --title "${{github.ref_name}} to PROD" \
+            --body "" \
+            --head ${{github.ref_name}} \
+            --base feature/bug-2 > url
+            
+          url=$(cat url)
+          echo "PR is ready for review and approve: $url "
+          echo "prNumber=$(basename "$url")" >> $GITHUB_OUTPUT
+          
+  CheckPR:
+    environment: Approval1
+    needs: [ RaisePR ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+      - name: chk PR
+        env:
+          PR_NUMBER: ${{needs.RaisePR.outputs.PR_NUMBER }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Check PR Status
+          echo "PR_NUMBER: $PR_NUMBER"
+          #show more fields gh pr view $PR_NUMBER --json state,merged 
+          gh pr view $PR_NUMBER --json state --jq '"PR Status: \(.state)"' 
+          [ "$(gh pr view $PR_NUMBER --json state --jq '.state')" = "MERGED"  ] || ( echo PR not Merged && exit 1 )
+      
+  DeployToProdFolder:
+    needs: [ CheckPR ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Process
+        run: | 
+          echo "current: ${{github.run_attempt}}"
+        

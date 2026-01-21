@@ -7,6 +7,8 @@ import lombok.extern.log4j.Log4j2;
 import org.hibernate.annotations.Cache;
 import org.solar.auth.entity.IUser;
 import org.solar.auth.entity.repo.IUserRepo;
+import org.solar.auth.exception.ErrorCode;
+import org.solar.auth.exception.GenericException;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,11 +30,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
 
+        //
         IUser iUser = iUserRepo.findByUsername(username);
 
+        //
         if(iUser == null)
-            return null;
-        log.info(iUser.getUsername());
+            throw new GenericException(ErrorCode.USERNOTFOUND, username);
+
+        //
         return iUser.getUser();
     }
 
