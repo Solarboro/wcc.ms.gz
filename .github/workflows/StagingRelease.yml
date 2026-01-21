@@ -27,9 +27,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Raise PR
-          gh "view 10 merged"
-          gh pr view 10 --json merged
-          echo "view 10"
           gh pr view 10
 
           
