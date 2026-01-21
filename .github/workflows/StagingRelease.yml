@@ -19,10 +19,16 @@ jobs:
     needs: [ DeployToUATFolder ]
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+        
       - name: Raise PR
         run: |
-          getPrResponse=$(curl -L -X POST -H "Authorization: Bearer ${{secrets.GITHUB_TOKEN}}" https://api.github.com/repos/Solarboro/wcc.ms.gz/pulls -d "{\"title\":\"feature/$pipeline_label to PORD\",\"body\":\"Please pull these awesome changes in!\",\"head\":\"wcc/dev\",\"base\":\"master\"}")
-          echo "===getPrResponse===: ${getPrResponse}" 
+          #getPrResponse=$(curl -L -X POST -H "Authorization: Bearer ${{secrets.GITHUB_TOKEN}}" https://api.github.com/repos/Solarboro/wcc.ms.gz/pulls -d "{\"title\":\"feature/$pipeline_label to PORD\",\"body\":\"Please pull these awesome changes in!\",\"head\":\"wcc/dev\",\"base\":\"master\"}")
+          #echo "===getPrResponse===: ${getPrResponse}" 
+          gh --version
+          gh pr create --head ${{github.ref_name}} --base dev
+          
           
   CheckPR:
     needs: [ RaisePR ]
